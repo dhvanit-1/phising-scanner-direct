@@ -43,6 +43,8 @@ export function UrlInput({ onAnalyze, isAnalyzing, variant = "hero" }: UrlInputP
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
+            id="compact-url-input"
+            name="url"
             ref={inputRef}
             type="url"
             placeholder="Enter URL to analyze..."
@@ -88,6 +90,8 @@ export function UrlInput({ onAnalyze, isAnalyzing, variant = "hero" }: UrlInputP
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground/60" />
             <input
+              id="hero-url-input"
+              name="url"
               ref={inputRef}
               type="url"
               placeholder="Enter URL to Analyze"
@@ -126,7 +130,6 @@ export function UrlInput({ onAnalyze, isAnalyzing, variant = "hero" }: UrlInputP
         </form>
       </motion.div>
 
-      {/* Terminal-style hint text */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

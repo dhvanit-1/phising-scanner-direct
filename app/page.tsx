@@ -6,7 +6,7 @@ import { CyberBackground } from "@/components/cyber-background"
 import { FloatingIcons } from "@/components/floating-icons"
 import { ScannerHeader } from "@/components/scanner-header"
 import { UrlInput } from "@/components/url-input"
-import { ScanStats } from "@/components/scan-stats"
+
 import { VerdictBanner, type VerdictType } from "@/components/verdict-banner"
 import { AiReasoningCard } from "@/components/ai-reasoning-card"
 import { NetworkIntelligenceCard } from "@/components/network-intelligence-card"
@@ -229,7 +229,6 @@ export default function PhishingScannerPage() {
             <div className="relative z-10 flex w-full max-w-3xl flex-col items-center gap-8">
               <ScannerHeader />
               <UrlInput onAnalyze={runScan} isAnalyzing={view === "scanning"} variant="hero" />
-              <ScanStats />
             </div>
 
             {/* Scanning overlay */}

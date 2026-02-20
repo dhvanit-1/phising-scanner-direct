@@ -4,56 +4,45 @@ import { useEffect, useRef } from "react"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 
-type SecurityMapProps = {
-  lat?: number
-  lng?: number
-}
-
-export function SecurityMap({ lat, lng }: SecurityMapProps) {
-  const mapContainer = useRef<HTMLDivElement | null>(null)
+export function SecurityMap({ locationName }: { locationName: string }) {
+  const mapContainer = useRef<HTMLDivElement>(null)
+  const mapInstance = useRef<maplibregl.Map | null>(null)
 
   useEffect(() => {
-    if (!mapContainer.current) return
+    if (!mapContainer.current || !locationName) return
 
-    // Validate coordinates
-    const hasValidCoordinates =
-      typeof lat === "number" && typeof lng === "number"
+    const initMap = async () => {
+      try {
+        // Fetch coordinates from location name via your API bridge
+        const res = await fetch(`/api/geocode?q=${encodeURIComponent(locationName)}`)
+        const data = await res.json()
 
-    // Default world view if coordinates are missing
-    const finalLat = hasValidCoordinates ? lat : 20
-    const finalLng = hasValidCoordinates ? lng : 0
-    const finalZoom = hasValidCoordinates ? 12 : 1.5
+        if (data.lat && data.lng) {
+          if (mapInstance.current) mapInstance.current.remove()
 
-    // Initialize map
-    const map = new maplibregl.Map({
-      container: mapContainer.current,
-      style: "https://tiles.openfreemap.org/styles/liberty",
-      center: [finalLng, finalLat],
-      zoom: finalZoom,
-    })
+          mapInstance.current = new maplibregl.Map({
+            container: mapContainer.current!,
+            style: "https://tiles.openfreemap.org/styles/liberty",
+            center: [data.lng, data.lat],
+            zoom: 10,
+            attributionControl: false
+          })
 
-    // Resize properly after load
-    map.on("load", () => {
-      map.resize()
-    })
+          mapInstance.current.on('load', () => mapInstance.current?.resize())
 
-    // Add marker if valid coordinates exist
-    if (hasValidCoordinates) {
-      new maplibregl.Marker({ color: "#ef4444" })
-        .setLngLat([lng as number, lat as number])
-        .addTo(map)
+          new maplibregl.Marker({ color: "#ef4444" })
+            .setLngLat([data.lng, data.lat])
+            .addTo(mapInstance.current)
+        }
+      } catch (error) {
+        console.error("Map failed to load for location:", locationName)
+      }
     }
 
-    // Cleanup on unmount
-    return () => {
-      map.remove()
-    }
-  }, [lat, lng])
+    initMap()
 
-  return (
-    <div
-      ref={mapContainer}
-      className="h-full w-full bg-zinc-950"
-    />
-  )
+    return () => mapInstance.current?.remove()
+  }, [locationName])
+
+  return <div ref={mapContainer} className="h-full w-full bg-zinc-950" />
 }

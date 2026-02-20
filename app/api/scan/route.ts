@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       confidence: 94,
       aiReasoning: ["Detected typosquatting", "Blacklisted IP found"],
       ipAddress: "45.95.168.222",
-      locationName: "Ahmedabad,India ",
+      locationName: "surat",
       latitude: 23.0225,
       longitude: 72.5714,
       ispAsn: "AS37560 — Cynextra Ng Ltd",
